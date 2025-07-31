@@ -1,198 +1,132 @@
-# TexttoSpeech Backend
+# Speech to Text Frontend (React + Vite)
 
-This is the **backend server** for the **TexttoSpeechBackend** application, built with Node.js and Express. It handles audio file uploads, integrates with Google Cloud's Speech-to-Text API for transcription, and stores results in Supabase. Authentication and user management are also powered by Supabase.
-
+A sleek and modern frontend for transcribing audio files into readable text using Google Cloud Speech-to-Text API via a connected backend. This project uses **React + Vite**, **Supabase Auth**, **Tailwind CSS**, and is fully deployable to **Vercel**.
 
 ## Features
 
-* Accepts `.mp3` and `.wav` audio file uploads via `POST /transcribe`
-* Transcribes speech to text using Google Cloud Speech-to-Text API
-* Stores transcription results per user in Supabase
-* Fetch transcription history using `GET /transcriptions/:user_id`
-* Middleware includes CORS, Multer for file upload handling, and dotenv for environment config
-* Designed to support both local development and Render deployment
-
-
-## Tech Stack
-
-* **Node.js + Express** – Backend server and API routes
-* **Google Cloud Speech-to-Text API** – Audio transcription engine
-* **Supabase** – Used for:
-
-  * **Authentication** (email/password-based)
-  * **PostgreSQL Database** (transcription history)
-* **Multer** – File upload middleware
-* **CORS** – Enables cross-origin requests for frontend-backend integration
-* **Render** – Deployment of backend server
+* Login, Signup & Password Reset with Supabase Auth
+* Upload `.mp3`, `.wav`, `.m4a` audio files
+* Live transcription from backend using Google Speech-to-Text
+* View and scroll through past transcriptions
+* Password reset flow with email redirect
+* Toast notifications for success/errors (via `react-toastify`)
+* Responsive UI with a purple-gold gradient theme
+* Protected Dashboard with auto-redirect for unauthenticated users
+* Deploy-ready on Vercel
 
 
 ## Folder Structure
 
 ```
-/server
-  ├── index.js                  # Main Express server file
-  ├── uploads/                  # Temporary folder for uploaded audio files
-  ├── .env                      # Environment variables (not committed)
-  └── google-credentials.json   # Google Cloud service account credentials
+src/
+├── components/
+│   ├── authform.jsx            # Reusable login/signup form with logic
+│   └── transcription_panel.jsx # File upload + history display
+├── pages/
+│   ├── login.jsx               # Login and Signup UI
+│   ├── dashboard.jsx           # Authenticated dashboard
+│   └── reset_password.jsx      # Password reset form
+├── App.jsx                     # Main app + routing logic
+├── config.js                   # API URL fallback for dev/deploy
+├── supabaseClient.js           # Supabase setup
+├── index.css                   # TailwindCSS styles
+└── main.jsx                    # App entry point
 ```
 
 
-## Setup Instructions
+## Tech Stack
 
-### A. Prerequisites
+| Purpose        | Tool / Library   |
+| -------------- | ---------------- |
+| Frontend       | React (Vite)     |
+| Authentication | Supabase         |
+| Styling        | Tailwind CSS     |
+| Routing        | React Router DOM |
+| Requests       | Axios            |
+| Notifications  | React Toastify   |
+| Hosting        | Vercel           |
 
-Ensure the following are ready before setup:
 
-1. **Node.js**
+## Getting Started
 
-   * Version 18 or above is recommended.
-   * Verify installation:
+### 1. Clone the Repository
 
-     ```bash
-     node -v
-     npm -v
-     ```
+```bash
+git clone https://github.com/your-username/speech-to-text-frontend.git
+cd speech-to-text-frontend
+```
 
-2. **Supabase Account**
+### 2. Install Dependencies
 
-   * Create a project at [https://supabase.com](https://supabase.com)
-   * Enable Authentication and Database
-   * Get:
+```bash
+npm install
+```
 
-     * Supabase URL
-     * Supabase Anon Key
+### 3. Create `.env` file
 
-3. **Google Cloud Account**
+Create a `.env` file in the root directory with the following:
 
-   * Enable the **Speech-to-Text API**
-   * Create a **service account key** (JSON format)
-   * Download it as `google-credentials.json`
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_KEY=your-anon-key
+VITE_API_URL=http://localhost:5000 # or Render URL for backend
+```
+
+### 4. Run Dev Server
+
+```bash
+npm run dev
+```
+
+Your frontend will be available at `http://localhost:5173`
+
+
+## Authentication with Supabase
+
+* Email/password based login and signup
+* Includes password reset (via Supabase redirect)
+* Frontend checks auth session & redirects accordingly
+* Supabase credentials must be set via `.env` and Vercel Dashboard
 
 ---
 
-### B. Backend Setup
+## API Endpoints Expected from Backend
 
-1. Navigate to the server folder:
+| Endpoint                   | Method | Description                        |
+| -------------------------- | ------ | ---------------------------------- |
+| `/transcribe`              | POST   | Upload audio + user ID             |
+| `/transcriptions/:user_id` | GET    | Fetch user’s transcription history |
 
-   ```bash
-   cd server
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Add a `.env` file in the root of `/server`:
-
-   ```env
-   SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_KEY=your-supabase-anon-key
-   GOOGLE_APPLICATION_CREDENTIALS=google-credentials.json
-   ```
-
-4. Place your downloaded `google-credentials.json` file inside the `/server` directory.
-
-5. Start the backend server:
-
-   ```bash
-   node index.js
-   ```
-
-   Server runs on: `http://localhost:5000`
+> Make sure your backend supports:
+>
+> * CORS
+> * Multipart form data
+> * Uses Google Cloud Speech API
 
 
-## API Endpoints
+## Vercel Deployment
 
-### POST `/transcribe`
+1. Push frontend repo to GitHub
+2. Connect your GitHub repo to Vercel
+3. Set the following environment variables in **Vercel → Project Settings**:
 
-Transcribes uploaded audio and stores the result.
-
-* **Request:**
-  `multipart/form-data` with fields:
-
-  * `audio`: Audio file (`.mp3`, `.wav`)
-  * `user_id`: Supabase user ID
-
-* **Response:**
-
-  ```json
-  {
-    "transcription": "Transcribed text here"
-  }
-  ```
-
-### GET `/transcriptions/:user_id`
-
-Returns all saved transcriptions for a specific user.
-
-* **Response:**
-
-  ```json
-  {
-    "transcriptions": [
-      {
-        "id": 1,
-        "file_name": "audio.wav",
-        "transcription": "Text here...",
-        "created_at": "2025-07-29T10:00:00Z"
-      }
-    ]
-  }
-  ```
-
-
-## Deployment (Render)
-
-1. Push backend folder to a GitHub repo
-2. Go to [https://render.com](https://render.com)
-3. Click **New Web Service** and link the backend repo
-4. Configure:
-
-   * **Build Command:**
-
-     ```bash
-     npm install
-     ```
-   * **Start Command:**
-
-     ```bash
-     node index.js
-     ```
-
-5. Add the following environment variables in Render:
-
-   ```
-   SUPABASE_URL=your_supabase_url
-   SUPABASE_KEY=your_supabase_anon_key
-   GOOGLE_APPLICATION_CREDENTIALS=google-credentials.json
-   ```
-
-6. Upload the `google-credentials.json` via Render's dashboard or use persistent storage for runtime access.
-
-
-## Testing
-
-You can test the backend independently using **Postman** or **cURL**:
-
-### Transcription Upload:
-
-```bash
-curl -X POST http://localhost:5000/transcribe \
-  -F "audio=@/path/to/file.mp3" \
-  -F "user_id=your_supabase_user_id"
+```env
+VITE_SUPABASE_URL=
+VITE_SUPABASE_KEY=
+VITE_API_URL=
 ```
 
-### Fetch History:
+4. Click **Deploy**
 
-```bash
-curl http://localhost:5000/transcriptions/your_supabase_user_id
-```
+> No need to upload or expose Google credentials on Vercel — those are only used on your backend.
 
 
-## Future Improvements
+## Future Enhancements
 
-* Integrate file size limits and automatic file cleanup
-* Add transcription language options
-* Add rate-limiting and error monitoring
+* Toast notifications (`react-toastify`)
+* Audio recording from microphone
+* Export transcript to PDF or `.txt`
+* Password strength validation
+* Dark mode toggle
+* Language selection for transcription
+

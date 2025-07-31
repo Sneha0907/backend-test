@@ -1,7 +1,7 @@
 {
-  "appName": "TexttoSpeechBackend",
+  "appName": "TextToSpeech Frontend",
   "version": "1.0.0",
-  "description": "Backend server for the voice transcription app using Node.js, Express, Google Speech-to-Text API, and Supabase.",
+  "description": "Frontend for the Speech to text voice transcription app, built with React and Supabase authentication.",
   "maintainer": {
     "name": "Smarth Sarin",
     "email": "smarthsarin@gmail.com",
@@ -9,28 +9,30 @@
   },
   "environments": {
     "development": {
-      "apiBaseUrl": "http://localhost:5000",
-      "frontendUrl": "http://localhost:5173"
+      "frontendUrl": "http://localhost:5173",
+      "apiBaseUrl": "http://localhost:5000"
     },
     "production": {
-      "apiBaseUrl": "https://texttospeechbackend-1.onrender.com",
-      "frontendUrl": "https://speech-to-text-frontend-phi.vercel.app"
+      "frontendUrl": "https://speech-to-text-frontend-phi.vercel.app",
+      "apiBaseUrl": "https://texttospeechbackend-1.onrender.com"
     }
   },
   "features": [
-    "API endpoint for audio file transcription (MP3/WAV)",
-    "Supabase authentication verification",
-    "Store and retrieve transcription history from Supabase",
-    "Supports deployment on Render"
+    "User authentication via Supabase",
+    "Audio file upload (MP3/WAV)",
+    "Google Speech-to-Text integration (via backend)",
+    "Transcription history display",
+    "Responsive React UI with Tailwind CSS"
   ],
   "upgradeHistory": [
     {
       "version": "1.0.0",
       "date": "2025-07-30",
       "changes": [
-        "Initial backend release with POST /transcribe and GET /transcriptions/:user_id",
-        "Integrated Google Cloud Speech-to-Text API and Supabase DB",
-        "Ready for deployment on Render"
+        "Added login/signup/reset flow using Supabase",
+        "Implemented upload and display of transcription results",
+        "Integrated backend API with Axios",
+        "Deployed frontend to Vercel"
       ]
     }
   ]

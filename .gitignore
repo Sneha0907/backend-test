@@ -1,12 +1,13 @@
 # === NODE ===
-server/node_modules/
+client/node_modules/
+node_modules
 
 # === ENV & Credentials ===
 .env
-server/.env
+client/.env
 
 # === BUILD ARTIFACTS ===
-server/uploads/
+client/dist/
 
 # === LOGS ===
 *.log
@@ -22,7 +23,3 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
-
-# Ignore Google Cloud credentials
-server/google-credentials.json
-
